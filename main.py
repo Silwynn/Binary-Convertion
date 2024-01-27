@@ -1,9 +1,8 @@
-import menu3
 import tkinter as tk
 from tkinter import messagebox
 root=tk.Tk()
 root.title("Binary Conversion")
-root.geometry('500x300')
+root.geometry('550x550')
 
 
 def home_page():
@@ -41,7 +40,7 @@ def Menu_3_page():
     
     Menu_3_frame.pack(pady=20)
  
-    
+
     
 def hide_indicators():
     home_indicate.config(bg='#c3c3c3')
@@ -55,10 +54,11 @@ def delete_pages():
         
 
 def indicate(lb, page):
-    hide_indicators
+    hide_indicators()  # Call the hide_indicators function
     lb.config(bg='#158aff')
     delete_pages()
     page()
+
 
 options_frame = tk.Frame(root, bg="#c3c3c3")
 
