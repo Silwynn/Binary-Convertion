@@ -3,23 +3,27 @@ from tkinter import messagebox
 
 def perform_binary_operation(operation, operand1, operand2=None):
     try:
-        operand1 = float(operand1)
+        operand1 = int(operand1, 2)
         if operand2:
-            operand2 = float(operand2)
+            operand2 = int(operand2, 2)
     except ValueError:
         messagebox.showerror('Error', 'Invalid binary input')
         return None
 
     if operation == 'Division':
-        return operand1 / operand2
+        if operand2 == 0:
+            messagebox.showerror('Error', 'Cannot divide by zero')
+            return None
+        else:
+            return bin(operand1 // operand2)[2:]
     elif operation == 'Multiplication':
-        return operand1 * operand2
+        return bin(operand1 * operand2)[2:]
     elif operation == 'Subtraction':
-        return operand1 - operand2
+        return bin(operand1 - operand2)[2:]
     elif operation == 'Addition':
-        return operand1 + operand2
+        return bin(operand1 + operand2)[2:]
     elif operation == '2s Complement':
-        return -operand1
+        return bin(-operand1)[2:]
     else:
         messagebox.showerror('Error', 'Invalid operation')
         return None
