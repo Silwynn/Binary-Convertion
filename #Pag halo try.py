@@ -66,6 +66,17 @@ def Menu_2_page():
     Menu_2_indicate.config(bg='#158aff')
     delete_pages()
     
+    def show_decimal():
+        try:
+            binary_input = entry_operand1.get()
+            if not binary_input:
+                raise ValueError("Empty input")
+            
+            num = int(binary_input, 2)
+            messagebox.showinfo('Decimal Value', f'Decimal Value: {num}')
+        except ValueError as e:
+            messagebox.showerror('Error', 'You must enter a valid binary number to convert')
+
     Menu_2_frame = tk.Frame(main_frame)
     
     label_heading = tk.Label(Menu_2_frame, text='Binary Operations', font=('times new roman', 20, 'bold'), bg='lime', fg='blue', relief=tk.RIDGE)
@@ -81,7 +92,7 @@ def Menu_2_page():
     label_operand1 = tk.Label(Menu_2_frame, text='Operand 1:', font=('times new roman', 15, 'bold'), fg='blue')
     label_operand1.pack()
 
-    global entry_operand1  # Define entry_operand1 as a global variable
+    global entry_operand1 
     entry_operand1 = tk.Entry(Menu_2_frame, font='arial 15', fg='blue', justify=tk.CENTER)
     entry_operand1.pack()
 
@@ -95,6 +106,9 @@ def Menu_2_page():
     btn_calculate = tk.Button(Menu_2_frame, text='Calculate', font='arial 15 bold', fg='crimson', bg='lime', width=15, command=calculate_result)
     btn_calculate.pack(pady=10)
 
+    btn_show_decimal = tk.Button(Menu_2_frame, text='Show Decimal', font='arial 15 bold', fg='crimson', bg='lime', width=15, command=show_decimal)
+    btn_show_decimal.pack(pady=10)
+
     Menu_2_frame.pack(pady=20)
 
 def Menu_3_page():
@@ -107,47 +121,54 @@ def Menu_3_page():
     label_heading = tk.Label(Menu_3_frame, text='Conversion System', font=('times new roman', 40, 'bold'), bg='lime', fg='blue', relief=tk.RIDGE)
     label_heading.pack(pady=10)
     
-    label_input_binary = tk.Label(Menu_3_frame, text='Input Binary', font=('times new roman', 15, 'bold'), fg='blue')
-    label_input_binary.place(x=50, y=150)
-    
-    label_decimal = tk.Label(Menu_3_frame, text='Decimal', font=('times new roman', 15, 'bold'), fg='blue')
-    label_decimal.place(x=50, y=230)
-    
-    label_hexa_decimal = tk.Label(Menu_3_frame, text='Hexa Decimal', font=('times new roman', 15, 'bold'), fg='blue')
-    label_hexa_decimal.place(x=50, y=300)
-    
-    label_octa_decimal = tk.Label(Menu_3_frame, text='Octa Decimal', font=('times new roman', 15, 'bold'), fg='blue')
-    label_octa_decimal.place(x=50, y=370)
+    input_frame = tk.Frame(Menu_3_frame)
+    input_frame.pack(pady=10)
+
+    label_input_binary = tk.Label(input_frame, text='Input Binary', font=('times new roman', 15, 'bold'), fg='blue')
+    label_input_binary.grid(row=0, column=0, padx=10, pady=5, sticky='w')
 
     global binary, lbldecimal, lblhexa, lbloctal  # Declare tkinter variables as global
     
-    binary = tk.StringVar()  # Define tkinter variables
+    binary = tk.StringVar()  
     lbldecimal = tk.StringVar()
     lblhexa = tk.StringVar()
     lbloctal = tk.StringVar()
 
-    entry_binary = tk.Entry(Menu_3_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=binary)
-    entry_binary.place(x=300, y=150)
-    
-    entry_decimal = tk.Entry(Menu_3_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lbldecimal)
-    entry_decimal.place(x=300, y=230)
-    
-    entry_hexa_decimal = tk.Entry(Menu_3_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lblhexa)
-    entry_hexa_decimal.place(x=300, y=300)
-    
-    entry_octa_decimal = tk.Entry(Menu_3_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lbloctal)
-    entry_octa_decimal.place(x=300, y=370)
-    
-    btn_convert = tk.Button(Menu_3_frame, text='Convert', font='arial 20 bold', fg='crimson', bg='lime', width=10, command=convert)
-    btn_convert.place(x=50, y=500)
-    
-    btn_clear = tk.Button(Menu_3_frame, text='Clear', font='arial 20 bold', fg='crimson', bg='lime', width=10, command=clear)
-    btn_clear.place(x=300, y=500)
-    
-    btn_exit = tk.Button(Menu_3_frame, text='Exit', font='arial 20 bold', fg='crimson', bg='lime', width=10, command=exit_app)
-    btn_exit.place(x=550, y=500)
+    entry_binary = tk.Entry(input_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=binary)
+    entry_binary.grid(row=0, column=1, padx=10, pady=5)
+
+    btn_convert = tk.Button(input_frame, text='Convert', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=convert)
+    btn_convert.grid(row=0, column=2, padx=10, pady=5)
+
+    result_frame = tk.Frame(Menu_3_frame)
+    result_frame.pack(pady=10)
+
+    label_decimal = tk.Label(result_frame, text='Decimal', font=('times new roman', 15, 'bold'), fg='blue')
+    label_decimal.grid(row=0, column=0, padx=10, pady=5, sticky='w')
+
+    entry_decimal = tk.Entry(result_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lbldecimal)
+    entry_decimal.grid(row=0, column=1, padx=10, pady=5)
+
+    label_hexa_decimal = tk.Label(result_frame, text='Hexa Decimal', font=('times new roman', 15, 'bold'), fg='blue')
+    label_hexa_decimal.grid(row=1, column=0, padx=10, pady=5, sticky='w')
+
+    entry_hexa_decimal = tk.Entry(result_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lblhexa)
+    entry_hexa_decimal.grid(row=1, column=1, padx=10, pady=5)
+
+    label_octa_decimal = tk.Label(result_frame, text='Octa Decimal', font=('times new roman', 15, 'bold'), fg='blue')
+    label_octa_decimal.grid(row=2, column=0, padx=10, pady=5, sticky='w')
+
+    entry_octa_decimal = tk.Entry(result_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lbloctal)
+    entry_octa_decimal.grid(row=2, column=1, padx=10, pady=5)
+
+    btn_clear = tk.Button(Menu_3_frame, text='Clear', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=clear)
+    btn_clear.pack(pady=10, side=tk.LEFT)
+
+    btn_exit = tk.Button(Menu_3_frame, text='Exit', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=exit_app)
+    btn_exit.pack(pady=10, side=tk.RIGHT)
     
     Menu_3_frame.pack(pady=20)
+
 
 def indicate(lb, page):
     hide_indicators()  
