@@ -127,7 +127,7 @@ def Menu_3_page():
     label_input_binary = tk.Label(input_frame, text='Input Binary', font=('times new roman', 15, 'bold'), fg='blue')
     label_input_binary.grid(row=0, column=0, padx=10, pady=5, sticky='w')
 
-    global binary, lbldecimal, lblhexa, lbloctal  # Declare tkinter variables as global
+    global binary, lbldecimal, lblhexa, lbloctal  
     
     binary = tk.StringVar()  
     lbldecimal = tk.StringVar()
