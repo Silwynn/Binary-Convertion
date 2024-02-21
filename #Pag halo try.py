@@ -164,8 +164,6 @@ def Menu_3_page():
     btn_clear = tk.Button(Menu_3_frame, text='Clear', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=clear)
     btn_clear.pack(pady=10, side=tk.LEFT)
 
-    btn_exit = tk.Button(Menu_3_frame, text='Exit', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=exit_app)
-    btn_exit.pack(pady=10, side=tk.RIGHT)
     
     Menu_3_frame.pack(pady=20)
 
@@ -182,14 +180,29 @@ def home_page():
     
     lb = tk.Label(home_frame, text='BINARY CONVERSION\n\n', font=('Bold', 30))
     lb.pack()
+
+    title_lb = tk.Label(home_frame, text='Binary operation and Conversion by Mark Silwyn Jardin and El Cid de Guzman', font=('Arial', 14))
+    title_lb.pack()
     
     home_frame.pack(pady=20)
-    
+
 def Menu_1_page():
     Menu_1_frame = tk.Frame(main_frame)
     
-    lb = tk.Label(Menu_1_frame, text='Main Menu\n\n', font=('Bold', 30))
+    lb = tk.Label(Menu_1_frame, text='Main Menu', font=('Bold', 30))
     lb.pack()
+    
+    btn_exit = tk.Button(Menu_1_frame, text='Exit', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=exit_app)
+    btn_exit.pack(pady=10, side=tk.RIGHT)
+    
+    btn_exit = tk.Button(Menu_1_frame, text='Menu 3', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=Menu_3_page)
+    btn_exit.pack(pady=10, side=tk.RIGHT)
+    
+    btn_exit = tk.Button(Menu_1_frame, text='Menu 2', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=Menu_2_page)
+    btn_exit.pack(pady=10, side=tk.RIGHT)
+    
+    Menu_1_frame.pack(pady=20)
+
     
     Menu_1_frame.pack(pady=20)
 
