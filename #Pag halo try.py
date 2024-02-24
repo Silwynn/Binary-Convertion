@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
+#Binary Operation
 def perform_binary_operation(operation, operand1, operand2=None):
     try:
         operand1 = int(operand1, 2)
@@ -19,38 +20,47 @@ def perform_binary_operation(operation, operand1, operand2=None):
     elif operation == 'Multiplication':
         return bin(operand1 * operand2)[2:]
     elif operation == 'Subtraction':
-        return bin(operand1 - operand2)[2:]
+        if operand2 is None:
+            messagebox.showerror('Error', 'Subtraction requires two operands')
+            return None
+        else:
+            result = operand1 + (-operand2)
+            # Ensure the result is within the range of representable values
+            if result >= 0:
+                return bin(result)[2:]
+            else:
+                # Calculate the two's complement for negative numbers
+                return bin(2 ** len(bin(operand1)[2:]) + result)[2:]
     elif operation == 'Addition':
         return bin(operand1 + operand2)[2:]
     elif operation == '2s Complement':
-        return bin(-operand1)[2:]
+        return bin(2 ** len(bin(operand1)[2:]) - operand1)[2:]
     else:
         messagebox.showerror('Error', 'Invalid operation')
         return None
+
 
 def calculate_result():
     operation = operation_var.get()
     operand1 = entry_operand1.get()
     operand2 = entry_operand2.get()
 
-    result = perform_binary_operation(operation, operand1, operand2)
+    binary_result = perform_binary_operation(operation, operand1, operand2)
 
-    if result is not None:
-        messagebox.showinfo('Result', f'Result: {result}')
+    if binary_result is not None:
+        try:
+            decimal_result = int(binary_result, 2)
+            if operation == 'Division':
+                remainder = int(operand1, 2) % int(operand2, 2)
+                messagebox.showinfo('Result', f'Binary Result: {binary_result}\nDecimal Result: {decimal_result}\nRemainder: {remainder}')
+            else:
+                messagebox.showinfo('Result', f'Binary Result: {binary_result}\nDecimal Result: {decimal_result}')
+        except ValueError:
+            messagebox.showerror('Error', 'Invalid binary result')
 
-def convert():
-    try:
-        binary_input = binary.get()
-        if not binary_input:
-            raise ValueError("Empty input")
-        
-        num = int(binary_input, 2)
-        lbldecimal.set(str(num))
-        lblhexa.set(hex(num)[2:])
-        lbloctal.set(oct(num)[2:])
-    except ValueError as e:
-        messagebox.showerror('Error', 'You must enter a valid binary number to convert')
 
+    
+#Convertion
 def clear():
     binary.set('')
     lblhexa.set('')
@@ -73,10 +83,10 @@ def Menu_2_page():
                 raise ValueError("Empty input")
             
             num = int(binary_input, 2)
-            messagebox.showinfo('Decimal Value', f'Decimal Value: {num}')
+            decimal_value = num
+            messagebox.showinfo('Decimal Value', f'Decimal Value: {decimal_value}')
         except ValueError as e:
             messagebox.showerror('Error', 'You must enter a valid binary number to convert')
-
     Menu_2_frame = tk.Frame(main_frame)
     
     label_heading = tk.Label(Menu_2_frame, text='Binary Operations', font=('times new roman', 20, 'bold'), bg='lime', fg='blue', relief=tk.RIDGE)
@@ -106,12 +116,92 @@ def Menu_2_page():
     btn_calculate = tk.Button(Menu_2_frame, text='Calculate', font='arial 15 bold', fg='crimson', bg='lime', width=15, command=calculate_result)
     btn_calculate.pack(pady=10)
 
-    btn_show_decimal = tk.Button(Menu_2_frame, text='Show Decimal', font='arial 15 bold', fg='crimson', bg='lime', width=15, command=show_decimal)
-    btn_show_decimal.pack(pady=10)
-
     Menu_2_frame.pack(pady=20)
 
+
 def Menu_3_page():
+    def convert():
+        try:
+            input_value = entry_binary.get()  # Use entry_binary to get the binary input
+            if not input_value:
+                raise ValueError("Empty input")
+
+            conversion_type = conversion_type_var.get()
+
+            if conversion_type == "Decimal":
+                integer_part, _, fractional_part = input_value.partition('.')
+
+                decimal_integer = int(integer_part, 2)
+
+                decimal_fractional = 0.0
+                if fractional_part:
+                    fractional_part = fractional_part[::-1]
+                    for i, bit in enumerate(fractional_part):
+                        decimal_fractional += int(bit) * (2 ** -(i + 1))
+
+                decimal_value = decimal_integer + decimal_fractional
+                lbldecimal.set(str(decimal_value))
+
+
+                octal_value = oct(int(decimal_value))
+                lbloctal.set(octal_value[2:])
+
+                hexadecimal_value = hex(int(decimal_value))
+                lblhexa.set(hexadecimal_value[2:])
+
+                binary_value = bin(int(decimal_value))
+                lblbinary.set(binary_value[2:])
+
+
+            elif conversion_type == "Hexadecimal":
+                decimal_value = int(input_value, 16)
+
+                lbldecimal.set(str(decimal_value))
+
+                octal_value = oct(decimal_value)
+                lbloctal.set(octal_value[2:])
+
+                lblhexa.set(input_value)
+
+                binary_value = bin(decimal_value)
+                lblbinary.set(binary_value[2:])
+
+            elif conversion_type == "Octal":
+                decimal_value = int(input_value, 8)
+
+                lbldecimal.set(str(decimal_value))
+
+                lbloctal.set(input_value)
+
+                hexadecimal_value = hex(decimal_value)
+                lblhexa.set(hexadecimal_value[2:])
+
+                binary_value = bin(decimal_value)
+                lblbinary.set(binary_value[2:])
+
+            elif conversion_type == "Binary":
+                decimal_value = int(input_value, 2)
+
+                lbldecimal.set(str(decimal_value))
+
+                octal_value = oct(decimal_value)
+                lbloctal.set(octal_value[2:])
+
+                hexadecimal_value = hex(decimal_value)
+                lblhexa.set(hexadecimal_value[2:])
+
+                lblbinary.set(input_value)
+
+        except ValueError as e:
+            messagebox.showerror('Error', 'You must enter a valid number to convert')
+
+    def clear():
+        binary.set('')
+        lblhexa.set('')
+        lbldecimal.set('')
+        lbloctal.set('')
+        lblbinary.set('')
+    
     hide_indicators()  
     Menu_3_indicate.config(bg='#158aff')
     delete_pages()
@@ -124,21 +214,25 @@ def Menu_3_page():
     input_frame = tk.Frame(Menu_3_frame)
     input_frame.pack(pady=10)
 
-    label_input_binary = tk.Label(input_frame, text='Input Binary', font=('times new roman', 15, 'bold'), fg='blue')
-    label_input_binary.grid(row=0, column=0, padx=10, pady=5, sticky='w')
-
-    global binary, lbldecimal, lblhexa, lbloctal  
+    global binary, lbldecimal, lblhexa, lbloctal, lblbinary 
     
     binary = tk.StringVar()  
     lbldecimal = tk.StringVar()
     lblhexa = tk.StringVar()
     lbloctal = tk.StringVar()
+    lblbinary = tk.StringVar()
 
     entry_binary = tk.Entry(input_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=binary)
     entry_binary.grid(row=0, column=1, padx=10, pady=5)
 
+    conversion_types = ['Decimal', 'Hexadecimal', 'Octal', 'Binary']
+    conversion_type_var = tk.StringVar(value=conversion_types[0])
+
+    conversion_menu = tk.OptionMenu(input_frame, conversion_type_var, *conversion_types)
+    conversion_menu.grid(row=0, column=0, padx=10, pady=5, sticky='w')
+
     btn_convert = tk.Button(input_frame, text='Convert', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=convert)
-    btn_convert.grid(row=0, column=2, padx=10, pady=5)
+    btn_convert.grid(row=0, column=3, padx=10, pady=5)
 
     result_frame = tk.Frame(Menu_3_frame)
     result_frame.pack(pady=10)
@@ -160,11 +254,16 @@ def Menu_3_page():
 
     entry_octa_decimal = tk.Entry(result_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lbloctal)
     entry_octa_decimal.grid(row=2, column=1, padx=10, pady=5)
+    
+    label_binary = tk.Label(result_frame, text='Binary', font=('times new roman', 15, 'bold'), fg='blue')
+    label_binary.grid(row=3, column=0, padx=10, pady=5, sticky='w')
+
+    entry_binary_result = tk.Entry(result_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=lblbinary)
+    entry_binary_result.grid(row=3, column=1, padx=10, pady=5)
 
     btn_clear = tk.Button(Menu_3_frame, text='Clear', font='arial 15 bold', fg='crimson', bg='lime', width=10, command=clear)
     btn_clear.pack(pady=10, side=tk.LEFT)
 
-    
     Menu_3_frame.pack(pady=20)
 
 
@@ -272,3 +371,4 @@ operation_var = tk.StringVar()
 operation_var.set('Division')
 
 root.mainloop()
+
