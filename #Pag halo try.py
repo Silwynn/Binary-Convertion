@@ -1,14 +1,34 @@
 import tkinter as tk
 from tkinter import messagebox
 
-#Binary Operation
+def binary_to_decimal(binary_str):
+    decimal_value = 0
+    for i in range(len(binary_str)):
+        if binary_str[i] == '1':
+            decimal_value += 2**(len(binary_str) - i - 1)
+    return decimal_value
+
+def decimal_to_binary(decimal_value):
+    if decimal_value == 0:
+        return '0'
+    binary_str = ''
+    while decimal_value > 0:
+        binary_str = str(decimal_value % 2) + binary_str
+        decimal_value = decimal_value // 2
+    return binary_str
+
 def perform_binary_operation(operation, operand1, operand2=None):
     try:
-        operand1 = int(operand1, 2)
-        if operand2:
-            operand2 = int(operand2, 2)
+        if '.' in operand1 or (operand2 and '.' in operand2):
+            operand1 = int(float(operand1))
+            if operand2:
+                operand2 = int(float(operand2))
+        else:
+            operand1 = binary_to_decimal(operand1)
+            if operand2:
+                operand2 = binary_to_decimal(operand2)
     except ValueError:
-        messagebox.showerror('Error', 'Invalid binary input')
+        messagebox.showerror('Error', 'Invalid input')
         return None
 
     if operation == 'Division':
@@ -16,29 +36,22 @@ def perform_binary_operation(operation, operand1, operand2=None):
             messagebox.showerror('Error', 'Cannot divide by zero')
             return None
         else:
-            return bin(operand1 // operand2)[2:]
+            return decimal_to_binary(operand1 // operand2)
     elif operation == 'Multiplication':
-        return bin(operand1 * operand2)[2:]
+        return decimal_to_binary(operand1 * operand2)
     elif operation == 'Subtraction':
         if operand2 is None:
             messagebox.showerror('Error', 'Subtraction requires two operands')
             return None
         else:
-            result = operand1 + (-operand2)
-            # Ensure the result is within the range of representable values
-            if result >= 0:
-                return bin(result)[2:]
-            else:
-                # Calculate the two's complement for negative numbers
-                return bin(2 ** len(bin(operand1)[2:]) + result)[2:]
+            return decimal_to_binary(operand1 - operand2)
     elif operation == 'Addition':
-        return bin(operand1 + operand2)[2:]
+        return decimal_to_binary(operand1 + operand2)
     elif operation == '2s Complement':
-        return bin(2 ** len(bin(operand1)[2:]) - operand1)[2:]
+        return decimal_to_binary(2 ** len(decimal_to_binary(operand1)) - operand1)
     else:
         messagebox.showerror('Error', 'Invalid operation')
         return None
-
 
 def calculate_result():
     operation = operation_var.get()
@@ -51,13 +64,12 @@ def calculate_result():
         try:
             decimal_result = int(binary_result, 2)
             if operation == 'Division':
-                remainder = int(operand1, 2) % int(operand2, 2)
+                remainder = binary_to_decimal(operand1) % binary_to_decimal(operand2)
                 messagebox.showinfo('Result', f'Binary Result: {binary_result}\nDecimal Result: {decimal_result}\nRemainder: {remainder}')
             else:
                 messagebox.showinfo('Result', f'Binary Result: {binary_result}\nDecimal Result: {decimal_result}')
         except ValueError:
             messagebox.showerror('Error', 'Invalid binary result')
-
 
     
 #Convertion
@@ -122,75 +134,38 @@ def Menu_2_page():
 def Menu_3_page():
     def convert():
         try:
-            input_value = entry_binary.get()  # Use entry_binary to get the binary input
+            input_value = entry_binary.get()
             if not input_value:
                 raise ValueError("Empty input")
 
             conversion_type = conversion_type_var.get()
 
             if conversion_type == "Decimal":
-                integer_part, _, fractional_part = input_value.partition('.')
-
-                decimal_integer = int(integer_part, 2)
-
-                decimal_fractional = 0.0
-                if fractional_part:
-                    fractional_part = fractional_part[::-1]
-                    for i, bit in enumerate(fractional_part):
-                        decimal_fractional += int(bit) * (2 ** -(i + 1))
-
-                decimal_value = decimal_integer + decimal_fractional
-                lbldecimal.set(str(decimal_value))
-
-
-                octal_value = oct(int(decimal_value))
-                lbloctal.set(octal_value[2:])
-
-                hexadecimal_value = hex(int(decimal_value))
-                lblhexa.set(hexadecimal_value[2:])
-
-                binary_value = bin(int(decimal_value))
-                lblbinary.set(binary_value[2:])
-
-
-            elif conversion_type == "Hexadecimal":
-                decimal_value = int(input_value, 16)
-
-                lbldecimal.set(str(decimal_value))
-
-                octal_value = oct(decimal_value)
-                lbloctal.set(octal_value[2:])
-
-                lblhexa.set(input_value)
-
-                binary_value = bin(decimal_value)
-                lblbinary.set(binary_value[2:])
-
-            elif conversion_type == "Octal":
-                decimal_value = int(input_value, 8)
-
-                lbldecimal.set(str(decimal_value))
-
-                lbloctal.set(input_value)
-
-                hexadecimal_value = hex(decimal_value)
-                lblhexa.set(hexadecimal_value[2:])
-
-                binary_value = bin(decimal_value)
-                lblbinary.set(binary_value[2:])
-
-            elif conversion_type == "Binary":
-                decimal_value = int(input_value, 2)
-
+                decimal_value = int(input_value)
                 lbldecimal.set(str(decimal_value))
 
                 octal_value = oct(decimal_value)
                 lbloctal.set(octal_value[2:])
 
                 hexadecimal_value = hex(decimal_value)
-                lblhexa.set(hexadecimal_value[2:])
+                lblhexa.set(hexadecimal_value[2:].upper())
 
-                lblbinary.set(input_value)
+                binary_value = bin(decimal_value)
+                lblbinary.set(binary_value[2:])
+
+            else:
+                decimal_value = binary_to_decimal(input_value)
+                if conversion_type == "Hexadecimal":
+                    hexadecimal_value = hex(int(decimal_value))
+                    lblhexa.set(hexadecimal_value[2:])
+                elif conversion_type == "Octal":
+                    octal_value = oct(int(decimal_value))
+                    lbloctal.set(octal_value[2:])
+                elif conversion_type == "Binary":
+                    binary_value = bin(int(decimal_value))
+                    lblbinary.set(binary_value[2:])
+
+                lbldecimal.set(str(decimal_value))
 
         except ValueError as e:
             messagebox.showerror('Error', 'You must enter a valid number to convert')
