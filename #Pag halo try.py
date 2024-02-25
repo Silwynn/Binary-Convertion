@@ -1,6 +1,8 @@
+#We use import random
 import tkinter as tk
 from tkinter import messagebox
 
+#Binary to Decimal
 def binary_to_decimal(binary_str):
     decimal_value = 0
     for i in range(len(binary_str)):
@@ -8,6 +10,7 @@ def binary_to_decimal(binary_str):
             decimal_value += 2**(len(binary_str) - i - 1)
     return decimal_value
 
+#Decimal to Binary
 def decimal_to_binary(decimal_value):
     if decimal_value == 0:
         return '0'
@@ -17,6 +20,7 @@ def decimal_to_binary(decimal_value):
         decimal_value = decimal_value // 2
     return binary_str
 
+#Operand binary
 def perform_binary_operation(operation, operand1, operand2=None):
     try:
         if '.' in operand1 or (operand2 and '.' in operand2):
@@ -31,28 +35,38 @@ def perform_binary_operation(operation, operand1, operand2=None):
         messagebox.showerror('Error', 'Invalid input')
         return None
 
+#Operations
     if operation == 'Division':
         if operand2 == 0:
             messagebox.showerror('Error', 'Cannot divide by zero')
             return None
         else:
             return decimal_to_binary(operand1 // operand2)
+ 
+ #Multiplication 
     elif operation == 'Multiplication':
         return decimal_to_binary(operand1 * operand2)
+ 
+ #Subtraction
     elif operation == 'Subtraction':
         if operand2 is None:
             messagebox.showerror('Error', 'Subtraction requires two operands')
             return None
         else:
             return decimal_to_binary(operand1 - operand2)
+ 
+ #Addition
     elif operation == 'Addition':
         return decimal_to_binary(operand1 + operand2)
+ 
+ #2's Complement
     elif operation == '2s Complement':
         return decimal_to_binary(2 ** len(decimal_to_binary(operand1)) - operand1)
     else:
         messagebox.showerror('Error', 'Invalid operation')
         return None
 
+#Calculate result
 def calculate_result():
     operation = operation_var.get()
     operand1 = entry_operand1.get()
@@ -60,6 +74,7 @@ def calculate_result():
 
     binary_result = perform_binary_operation(operation, operand1, operand2)
 
+#To print sa Result
     if binary_result is not None:
         try:
             decimal_result = int(binary_result, 2)
@@ -72,22 +87,18 @@ def calculate_result():
             messagebox.showerror('Error', 'Invalid binary result')
 
     
-#Convertion
-def clear():
-    binary.set('')
-    lblhexa.set('')
-    lbldecimal.set('')
-    lbloctal.set('')
-    
 def exit_app():
     if messagebox.askyesno('Exit', 'Do you really want to exit?'):
         root.destroy()
+
+
 
 def Menu_2_page():
     hide_indicators()  
     Menu_2_indicate.config(bg='#158aff')
     delete_pages()
     
+    #To show decimal Value
     def show_decimal():
         try:
             binary_input = entry_operand1.get()
@@ -99,6 +110,8 @@ def Menu_2_page():
             messagebox.showinfo('Decimal Value', f'Decimal Value: {decimal_value}')
         except ValueError as e:
             messagebox.showerror('Error', 'You must enter a valid binary number to convert')
+    
+    
     Menu_2_frame = tk.Frame(main_frame)
     
     label_heading = tk.Label(Menu_2_frame, text='Binary Operations', font=('times new roman', 20, 'bold'), bg='lime', fg='blue', relief=tk.RIDGE)
@@ -130,7 +143,7 @@ def Menu_2_page():
 
     Menu_2_frame.pack(pady=20)
 
-
+#Convertion
 def Menu_3_page():
     def convert():
         try:
@@ -140,6 +153,7 @@ def Menu_3_page():
 
             conversion_type = conversion_type_var.get()
 
+            #Decimal
             if conversion_type == "Decimal":
                 decimal_value = int(input_value)
                 lbldecimal.set(str(decimal_value))
@@ -152,15 +166,18 @@ def Menu_3_page():
 
                 binary_value = bin(decimal_value)
                 lblbinary.set(binary_value[2:])
-
+            
+            #Decimal Value
             else:
                 decimal_value = binary_to_decimal(input_value)
                 if conversion_type == "Hexadecimal":
                     hexadecimal_value = hex(int(decimal_value))
                     lblhexa.set(hexadecimal_value[2:])
+            #Octal
                 elif conversion_type == "Octal":
                     octal_value = oct(int(decimal_value))
                     lbloctal.set(octal_value[2:])
+            #Binary
                 elif conversion_type == "Binary":
                     binary_value = bin(int(decimal_value))
                     lblbinary.set(binary_value[2:])
@@ -170,6 +187,8 @@ def Menu_3_page():
         except ValueError as e:
             messagebox.showerror('Error', 'You must enter a valid number to convert')
 
+    
+    #Wag mo na to sama
     def clear():
         binary.set('')
         lblhexa.set('')
@@ -189,6 +208,7 @@ def Menu_3_page():
     input_frame = tk.Frame(Menu_3_frame)
     input_frame.pack(pady=10)
 
+#Calling Bits 
     global binary, lbldecimal, lblhexa, lbloctal, lblbinary 
     
     binary = tk.StringVar()  
@@ -196,7 +216,8 @@ def Menu_3_page():
     lblhexa = tk.StringVar()
     lbloctal = tk.StringVar()
     lblbinary = tk.StringVar()
-
+       
+#Wag mo to sama       
     entry_binary = tk.Entry(input_frame, font='arial 20', fg='blue', justify=tk.CENTER, relief=tk.GROOVE, textvariable=binary)
     entry_binary.grid(row=0, column=1, padx=10, pady=5)
 
